@@ -1,0 +1,18 @@
+name: Databricks Aggregation Job Infrastructure Deploy
+
+on:
+  push:
+    paths:
+    - build/terraform/**
+    
+jobs:
+  my_job:
+    # Name the Job
+    name: test job
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        run: echo test
+    
+    
