@@ -1,4 +1,4 @@
-name: Databricks Aggregation Job Infrastructure Deploy
+name: Test Job
 
 on:
   push:
