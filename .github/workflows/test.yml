@@ -2,8 +2,7 @@ name: Test Job
 
 on:
   push:
-    paths:
-    - build/terraform/**
+
     
 jobs:
   my_job:
