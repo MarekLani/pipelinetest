@@ -1,12 +1,41 @@
-name: "Auto Assign"
+name: "Guard Files"
 on:
-  - pull_request
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "./.github/workflows**"
 
 jobs:
-  assign_reviewer:
+  guard_filesr:
     runs-on: ubuntu-latest
     steps:
-    - uses: shufo/auto-assign-reviewer-by-files@v1.1.1
+      
+    - name: assing-reviewer 
+      uses: shufo/auto-assign-reviewer-by-files@v1.1.1
       with:
         config: '.github/assign-by-files.yml'
         token: ${{ secrets.GITHUB_TOKEN }}
+                
+    - name: read PR details
+      uses: 8BitJonny/gh-get-current-pr@v1
+      id: PR
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        filterOutClosed: true
+      if: ${{ steps.soap_validation_check.outputs.should_skip != 'true' }}
+        
+    - name: Send mail
+      uses: dawidd6/action-send-mail@v2
+      with:
+        server_address: smtp.<youremaildomain>.com
+        server_port: 465
+        username: ${{secrets.MAIL_USERNAME}}
+        password: ${{secrets.MAIL_PASSWORD}}
+        subject: Github Actions job result
+        # Literal body:
+        body: PR number ${{ steps.PR.outputs.number }} in ${{github.repository}} changes guarded files!
+        to: email@email.com
+        from: Watch Dog # <user@example.com>
+        content_type: text/html
+      if: steps.PR.outputs.number && ${{ steps.files_not_changed_check.outputs.should_skip != 'true' }}
+
